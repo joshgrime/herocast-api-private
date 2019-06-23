@@ -1,0 +1,87 @@
+service: herocast-api-private
+
+plugins:
+  - serverless-offline
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  tableThroughputs:
+    prod: 5
+    default: 1
+  tableThroughput: ${self:custom.tableThroughputs.${self:custom.stage}, self:custom.tableThroughputs.default}
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: eu-west-1
+
+  environment:
+   # tableName: ${self:custom.tableName}
+   #stripeSecretKey: ${self:custom.environment.stripeSecretKey}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:eu-west-1:*:"
+
+functions:
+  login:
+    handler: auth-api/login.main
+    events:
+      - http:
+        path: login
+        method: post
+        cors: true
+        authorizer: aws_iam
+        
+  signup:
+    handler: auth-api/signup.main
+    events:
+      - http:
+        path: signup
+        method: post
+        cors: true
+        authorizer: aws_iam
+  deleteTimes:
+    handler: private-api/delete-times.main
+    events:
+      - http:
+          path: delete-times
+          method: post
+          cors: true
+          authorizer: aws_iam
+
+  setDefaultPrices:
+    handler: private-api/set-default-prices.main
+    events:
+      - http:
+          path: set-default-prices/
+          method: post
+          cors: true
+          authorizer: aws_iam
+
+  updateGameConfig:
+    handler: private-api/update-game-config.main
+    events:
+      - http:
+          path: update-games
+          method: post
+          cors: true
+          authorizer: aws_iam
+
+  updateTimes:
+    handler: private-api/update-times.main
+    events:
+      - http:
+          path: update-times
+          method: post
+          cors: true
+          authorizer: aws_iam
