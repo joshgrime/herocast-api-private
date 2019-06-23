@@ -54,7 +54,7 @@ functions:
           path: delete-times
           method: post
           cors: true
-          authorizer: aws_iam
+          private: true
 
   setDefaultPrices:
     handler: private-api/set-default-prices.main
@@ -63,7 +63,7 @@ functions:
           path: set-default-prices/
           method: post
           cors: true
-          authorizer: aws_iam
+          private: true
 
   updateGameConfig:
     handler: private-api/update-game-config.main
@@ -72,7 +72,7 @@ functions:
           path: update-games
           method: post
           cors: true
-          authorizer: aws_iam
+          private: true
 
   updateTimes:
     handler: private-api/update-times.main
@@ -81,4 +81,4 @@ functions:
           path: update-times
           method: post
           cors: true
-          authorizer: aws_iam
+          private: true

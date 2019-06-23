@@ -3,7 +3,7 @@ const response = require("../libs/response-lib");
 
 module.exports = {
   main: async function (event, context) {
-    var postbody = JSON.parse(JSON.stringify(event.body));
+    var postbody = JSON.parse(event.body);
     const params = {
       TableName: 'users',
       Key: {
