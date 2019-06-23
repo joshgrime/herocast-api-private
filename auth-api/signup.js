@@ -1,79 +1,83 @@
 const dynamoDbLib = require("../libs/dynamodb-lib");
 const response = require("../libs/response-lib");
-const CryptoJS = require("crypto-js");
+const cryptojs = require("crypto-js");
+const uuidv1 = require('uuid/v1');
 const randomstring = require("randomstring");
 
 module.exports = {
   main: async function (event, context) {
-    var postbody = JSON.parse(JSON.stringify(event.body));
+    
+    var postbody = JSON.parse(event.body);
 
-    //check the email is not taken
+    const checkParams = {
+      "TableName": "users",
+      "IndexName": "email-index",
+      "KeyConditionExpression": "email = :e",
+      "ExpressionAttributeValues": {
+        ":e":postbody.email
+      }
+    }
+
+    var checkIfExists = await dynamoDbLib.call("query", checkParams)
+
+    if (checkIfExists.Items.length===0) {
+
+      var passSalt = randomstring.generate({
+        length: 64,
+        charset: 'alphanumeric'
+    });
+
+    var passHash = cryptojs.AES.encrypt(postbody.password, passSalt).toString();
+    var id = uuidv1();
+
+    console.log(id);
+    console.log(passHash);
 
     const params = {
-      TableName: 'users',
-      Key: {
-        email: postbody.email
-      }
-    };
-
-    try {
-      dynamoDbLib.call("get", params)
-      .then(x=>{
-        if (x.data.length>0) return response.failure({ status: false });
-        else {
-
-        //check the username is not taken
-
-            const params2 = {
-                TableName: 'users',
-                Key: {
-                    username: postbody.username
-                }
-            }
-
-            dynamoDbLib.call("get", params2)
-            .then(z=>{
-            
-                if (z.data.length>0) return response.failure({ status: false });
-                else {
-
-                    var passSalt = randomstring.generate({
-                        length: 64,
-                        charset: 'alphanumeric'
-                    });
-
-                    var passHash = CryptoJS.AES.encrypt(password, passSalt);
-
-                    const params3 = {
-                        TableName: 'users',
-                        Item: {
-                            "email": postbody.email,
-                            "password": passHash,
-                            "username": postbody.username,
-                            "level":0,
-                            "exp":0,
-                            "coins":0,
-                            "host": postbody.host
-                        }
-                    }
-
-                    if (postbody.host === 1) {
-                        params2.Item['vs'] = postbody.vs ? 1 : 0;
-                        params2.Item['coach'] = postbody.coach ? 1 : 0;
-                        params2.Item['casual'] = postbody.casual ? 1 : 0;
-                    }
-
-                    dynamoDbLib.call("put", params3)
-                    .then(y=>{
-                        return response.success(y);              
-                    });
-                }
-
-            });
+        "TableName": 'users',
+        "Item": {
+            "id": id,
+            "email": postbody.email,
+            "password": passHash,
+            "username": postbody.username,
+            "level":0,
+            "exp":0,
+            "coins":0,
+            "host": postbody.host
         }
-    });
-    } catch (e) {
-      return response.failure({ status: false });
     }
-  }
+
+    if (postbody.host === 1) {
+        params.Item['vs'] = postbody.vs ? 1 : 0;
+        params.Item['coach'] = postbody.coach ? 1 : 0;
+        params.Item['casual'] = postbody.casual ? 1 : 0;
+    }
+    try {
+      
+      var epic = await dynamoDbLib.call("put", params);
+
+        const params2 = {
+          TableName: 'salts',
+          Item: {
+            "id":id,
+            "salt":passSalt
+          }
+        }
+
+        var saltwrite = await dynamoDbLib.call("put", params2);
+
+        console.log(saltwrite);
+        return response.success({status: true});
+
+    } catch (e) {
+      console.log('BIG ERROR');
+      console.log(e);
+        return response.failure({ status: false, errorMessage: e });
+      }
+
+    } else {
+      return response.failure({status:false, errorMessage: 'Email already exists'});
+    }
+
+    }
 }
