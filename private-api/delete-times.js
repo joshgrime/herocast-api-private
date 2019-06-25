@@ -3,32 +3,63 @@ const response = require("../libs/response-lib");
 
 module.exports = {
   main: async function (event, context) {
-    var postbody = JSON.parse(JSON.stringify(event.body));
+    var postbody = JSON.parse(event.body);
+
+    if (postbody.times.length > 25) return response.failure({status:false,errorMessage:'You may only delete 25 times at once.'});
+
     const params = {
-      TableName: 'users',
-      Key: {
-        id: postbody.id
+      "TableName": "gameslots",
+      "IndexName": "hostid-date-index",
+      "KeyConditionExpression": "#hostid = :h and #date = :d",
+      ExpressionAttributeNames: {
+        "#hostid":"hostid",
+        "#date": "date"
+      },
+      ExpressionAttributeValues: {
+          ":h": postbody.hostid,
+          ":d": postbody.date
       }
     };
+
     try {
-      dynamoDbLib.call("get", params)
-      .then(x=>{
-
-        console.log(x);
-        if (x.host !== 1) return response.failure({ status: false, body: 'Not a host account' });
-        if (x.twitchauthenticated !== 1) return response.failure({ status: false, body: 'Not authenticated with Twitch' });
-        if (x.games === null) return response.failure({ status: false, body: 'You do not have any games selected' });
-        if (x.console === null) return response.failure({ status: false, body: 'You have not selected a console' });
-
-        for (let x=0; x<postbody.times.length;x++) {
-            var insert = true;
-           
+      var times = await dynamoDbLib.call("query", params);
+      console.log(times);
+      
+      const deleteParams = {
+        RequestItems: {
+            "gameslots": []
         }
+      }
 
-       return response.success(x);
+      for (let x of postbody.times) {
+        for (let y of times.Items) {
+          if (x == y.time)  {
+            let obj = {
+              DeleteRequest: {
+                Key: {
+                  "id": y.id,
+                  "hostid": postbody.hostid,
+                }
+              }
+            };
+            deleteParams.RequestItems.gameslots.push(obj);
+          }
+        }
+      }
+      
+      console.log(JSON.stringify(deleteParams));
+ 
+      var dels = await dynamoDbLib.call("batchWrite", deleteParams)
 
-      });
+      if (dels.UnprocessedItems.length > 0) {
+        return response.failure({status:false, errorMessage:'Not all items were deleted.'})
+      }
+      else {
+        return response.success({status:true});
+      }
     } catch (e) {
+      console.log('Big error!');
+      console.log(e);
       return response.failure({ status: false });
     }
   }

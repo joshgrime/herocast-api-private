@@ -1,34 +1,57 @@
 const dynamoDbLib = require("../libs/dynamodb-lib");
 const response = require("../libs/response-lib");
+const uuidv1 = require('uuid/v1');
 
 module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
-    const params = {
+
+    if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once.'});
+
+    const checkParams = {
       TableName: 'users',
       Key: {
-        id: postbody.id
+        id: postbody.hostid
       }
     };
+
     try {
-      dynamoDbLib.call("get", params)
-      .then(x=>{
+      var user = await dynamoDbLib.call('get', checkParams);
 
-        console.log(x);
-        if (x.host !== 1) return response.failure({ status: false, body: 'Not a host account' });
-        if (x.twitchauthenticated !== 1) return response.failure({ status: false, body: 'Not authenticated with Twitch' });
-        if (x.games === null) return response.failure({ status: false, body: 'You do not have any games selected' });
-        if (x.console === null) return response.failure({ status: false, body: 'You have not selected a console' });
+      if (user.host !== 1) return response.failure({status: false, errorMessage: 'You must be a host to add game times'});
+      if (user.twitchAuthed !==1) return response.failure({status:false, errorMessage: 'You must authenticate your Twitch account first.'});
+      if (user.games === null || user.games === '') return response.failure({status: false, errorMessage: 'You must select games before creating gameslots'});
+      if (user.console === null || user.console === '') return response.failure({status: false, errorMessage: 'You must select your console before creating gameslots'});
 
-        for (let x=0; x<postbody.times.length;x++) {
-            var insert = true;
-           
+      const params = {
+        RequestItems: {
+            "gameslots": []
         }
+      }
 
-       return response.success(x);
-
-      });
+      for (let x of postbody.times) {
+        let id = uuidv1();
+        let obj = {
+          PutRequest: {
+            Item: {
+              "id":id,
+              "hostid": postbody.hostid,
+              "console":user.console,
+              "coachprice":postbody.coachprice,
+              "casualprice":postbody.casualprice,
+              "vsprice":postbody.vsprice,
+              "booked":0,
+              "time":x
+            }
+          }
+        }
+        params.RequestItems.gameslots.push(obj);
+      }
+      var write = await dynamoDbLib.call("batchWrite", params);
+      return response.success({status:true});
     } catch (e) {
+      console.log('Big error!');
+      console.log(e);
       return response.failure({ status: false });
     }
   }

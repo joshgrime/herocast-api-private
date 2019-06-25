@@ -9,6 +9,7 @@ module.exports = {
     else if (action === 'query') return dynamoDb.query(params).promise();
     else if (action === 'update') return dynamoDb.update(params).promise();
     else if (action === 'scan') return dynamoDb.scan(params).promise();
-    else if (action === 'delete') return dynamoDb.scan(params).promise();
+    else if (action === 'delete') return dynamoDb.delete(params).promise();
+    else if (action === 'batchWrite') return dynamoDb.batchWrite(params).promise();
   }
 }

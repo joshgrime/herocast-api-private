@@ -82,3 +82,12 @@ functions:
           method: post
           cors: true
           private: true
+
+  getMyTimes:
+    handler: private-api/get-my-times-for-this-date.main
+    events:
+      - http:
+          path: get-my-times
+          method: post
+          cors: true
+          private: true
