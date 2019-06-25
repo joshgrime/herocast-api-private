@@ -9,7 +9,8 @@ module.exports = {
     
     var postbody = JSON.parse(event.body);
 
-    const checkParams = {
+    try {
+    const checkEmailParams = {
       "TableName": "users",
       "IndexName": "email-index",
       "KeyConditionExpression": "email = :e",
@@ -18,9 +19,22 @@ module.exports = {
       }
     }
 
-    var checkIfExists = await dynamoDbLib.call("query", checkParams)
+    var checkIfEmailExists = await dynamoDbLib.call("query", checkEmailParams);
 
-    if (checkIfExists.Items.length===0) {
+    if (checkIfEmailExists.Items.length>0) return response.failure({status:false, errorMessage: 'Email already exists'});
+
+    const checkUserNameParams = {
+      "TableName": "users",
+      "IndexName": "username-index",
+      "KeyConditionExpression": "username = :u",
+      "ExpressionAttributeValues": {
+        ":u":postbody.username
+      }
+    }
+
+    var checkIfUsernameExists = await dynamoDbLib.call("query", checkUserNameParams);
+
+    if (checkIfUsernameExists.Items.length>0) return response.failure({status:false, errorMessage: 'Username taken'});
 
       var passSalt = randomstring.generate({
         length: 64,
@@ -29,9 +43,6 @@ module.exports = {
 
     var passHash = cryptojs.AES.encrypt(postbody.password, passSalt).toString();
     var id = uuidv1();
-
-    console.log(id);
-    console.log(passHash);
 
     const params = {
         "TableName": 'users',
@@ -51,8 +62,8 @@ module.exports = {
         params.Item['vs'] = postbody.vs ? 1 : 0;
         params.Item['coach'] = postbody.coach ? 1 : 0;
         params.Item['casual'] = postbody.casual ? 1 : 0;
+        params.Item['twitchAuthed'] = 0;
     }
-    try {
       
       var epic = await dynamoDbLib.call("put", params);
 
@@ -65,19 +76,12 @@ module.exports = {
         }
 
         var saltwrite = await dynamoDbLib.call("put", params2);
-
-        console.log(saltwrite);
-        return response.success({status: true});
+        return response.success({status: true, id: id});
 
     } catch (e) {
       console.log('BIG ERROR');
       console.log(e);
         return response.failure({ status: false, errorMessage: e });
       }
-
-    } else {
-      return response.failure({status:false, errorMessage: 'Email already exists'});
-    }
-
-    }
+  }
 }

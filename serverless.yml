@@ -74,6 +74,15 @@ functions:
           cors: true
           private: true
 
+  updateConsoleConfig:
+    handler: private-api/update-console-config.main
+    events:
+      - http:
+          path: update-console
+          method: post
+          cors: true
+          private: true
+
   updateTimes:
     handler: private-api/update-times.main
     events:

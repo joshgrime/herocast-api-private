@@ -9,12 +9,12 @@ module.exports = {
       Key: {
         id: postbody.id
       },
-      UpdateExpression: 'SET #g = :x',
+      UpdateExpression: 'SET #c = :x',
       ExpressionAttributeNames: {
-        '#g' : 'games'
+        '#c' : 'console'
       },
       ExpressionAttributeValues: {
-        ':x' : postbody.games.toString()
+        ':x' : postbody.console
       }
     };
     try {
