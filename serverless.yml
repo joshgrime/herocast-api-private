@@ -96,7 +96,34 @@ functions:
     handler: private-api/get-my-times-for-this-date.main
     events:
       - http:
-          path: get-my-times
+          path: get-my-times/{hostid}/{date}
+          method: get
+          cors: true
+          private: true
+
+  myProfileData:
+    handler: private-api/my-profile-data.main
+    events:
+      - http:
+          path: profile-data/{id}
+          method: get
+          cors: true
+          private: true
+
+  makeBooking:
+    handler: private-api/make-booking.main
+    events:
+      - http:
+          path: make-booking
+          method: post
+          cors: true
+          private: true
+
+  addCoins:
+    handler: private-api/add-coins.main
+    events:
+      - http:
+          path: add-coins
           method: post
           cors: true
           private: true

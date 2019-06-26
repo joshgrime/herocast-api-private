@@ -3,7 +3,8 @@ const response = require("../libs/response-lib");
 
 module.exports = {
   main: async function (event, context) {
-    var postbody = JSON.parse(event.body);
+    var hostid = event.pathParameters.id;
+    var date = event.pathParameters.date;
 
     const params = {
       "TableName": "gameslots",
@@ -14,8 +15,8 @@ module.exports = {
         "#date": "date"
       },
       ExpressionAttributeValues: {
-          ":h": postbody.hostid,
-          ":d": postbody.date
+          ":h": hostid,
+          ":d": date
       }
     };
 

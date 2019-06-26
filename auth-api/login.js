@@ -38,7 +38,7 @@ module.exports = {
       if (unhashedpass !== postbody.password) return response.failure({ status: false, errorMessage:'Incorrect password' });
       else {
         console.log('Passwords match!');
-        return response.success(user.id);
+        return response.success({ status: true, id:user.id});
       } 
     } catch (e) {
       console.log("Big error");
