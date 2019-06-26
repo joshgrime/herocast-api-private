@@ -3,7 +3,7 @@ const response = require("../libs/response-lib");
 
 module.exports = {
   main: async function (event, context) {
-    var hostid = event.pathParameters.id;
+    var hostid = event.pathParameters.hostid;
     var date = event.pathParameters.date;
 
     const params = {

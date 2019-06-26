@@ -22,7 +22,7 @@ module.exports = {
     var today = parseInt(y+m+d);
     var timeNow = parseInt(h+mi);
 
-    if (today > postbody.date) return response.failure({status: false, errorMessage: 'You cannot set a game slot in the past'});
+    if (today > parseInt(postbody.date)) return response.failure({status: false, errorMessage: 'You cannot set a game slot in the past'});
 
     const checkParams = {
       TableName: 'users',
@@ -47,8 +47,8 @@ module.exports = {
 
       for (let x of postbody.times) {
         let insert = true;
-        if (today == x) {
-          if (timeNow > x) insert = false;
+        if (today == postbody.date) {
+          if (timeNow > parseInt(x)) insert = false;
         }
         if (insert) {
           let id = uuidv1();

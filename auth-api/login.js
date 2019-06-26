@@ -38,7 +38,18 @@ module.exports = {
       if (unhashedpass !== postbody.password) return response.failure({ status: false, errorMessage:'Incorrect password' });
       else {
         console.log('Passwords match!');
-        return response.success({ status: true, id:user.id});
+
+        const usernameParams = {
+          "TableName": "users",
+          "Key": {
+              "id":user.id
+          },
+          "ProjectionExpression": "username"
+      }
+
+      var username = await dynamoDbLib.call("get", usernameParams)
+
+        return response.success({ status: true, id:user.id, username: username.Item.username});
       } 
     } catch (e) {
       console.log("Big error");
