@@ -4,6 +4,12 @@ const response = require("../libs/response-lib");
 module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
+
+      var gs = (function(y){
+        if (y === "") return 'NULL';
+        else return y.toString();
+      })(postbody.games);
+
     const params = {
       TableName: 'users',
       Key: {
@@ -14,7 +20,7 @@ module.exports = {
         '#g' : 'games'
       },
       ExpressionAttributeValues: {
-        ':x' : postbody.games.toString()
+        ':x' : gs
       }
     };
     try {

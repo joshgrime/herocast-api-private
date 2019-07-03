@@ -10,13 +10,8 @@ module.exports = {
         "Key": {
             "id":id
         },
-        "ProjectionExpression": "id, host, games, #lvl, twitchAuthed, coach, casual, vs, console, exp, email, username, coins",
-        "ExpressionAttributeNames": {
-          "#lvl":"level"
-        }
+        "ProjectionExpression": "twitchAuthed"
     }
-
-
     try {
       var payload = await dynamoDbLib.call("get", params);
       return response.success({status:true, data: payload.Item});

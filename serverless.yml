@@ -15,19 +15,7 @@ provider:
   environment:
   #tableName: ${self:custom.tableName}
    #stripeSecretKey: ${self:custom.environment.stripeSecretKey}
-
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:DescribeTable
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:eu-west-1:*:"
-
+   
 functions:
   login:
     handler: auth-api/login.main
@@ -101,6 +89,15 @@ functions:
           cors: true
           private: true
 
+  checkTwitchAuth:
+    handler: private-api/check-twitch-auth.main
+    events:
+      - http:
+          path: check-twitch-auth/{id}
+          method: get
+          cors: true
+          private: true
+
   myProfileData:
     handler: private-api/my-profile-data.main
     events:
@@ -124,6 +121,15 @@ functions:
     events:
       - http:
           path: add-coins
+          method: post
+          cors: true
+          private: true
+
+  newTwitchUser:
+    handler: private-api/new-twitch-user.main
+    events:
+      - http:
+          path: new-twitch-user
           method: post
           cors: true
           private: true
