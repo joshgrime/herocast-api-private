@@ -35,6 +35,15 @@ functions:
           cors: true
           private: true
 
+  changePassword:
+    handler: private-api/change-password.main
+    events:
+      - http:
+          path: change-password
+          method: post
+          cors: true
+          private: true
+
   deleteTimes:
     handler: private-api/delete-times.main
     events:
@@ -50,6 +59,15 @@ functions:
       - http:
           path: set-default-prices/
           method: post
+          cors: true
+          private: true
+
+  getDefaultPrices:
+    handler: private-api/get-default-prices.main
+    events:
+      - http:
+          path: get-default-prices/{id}
+          method: get
           cors: true
           private: true
 
