@@ -44,12 +44,12 @@ module.exports = {
           "Key": {
               "id":user.id
           },
-          "ProjectionExpression": "username"
+          "ProjectionExpression": "username, host"
       }
 
       var username = await dynamoDbLib.call("get", usernameParams)
 
-        return response.success({ status: true, id:user.id, username: username.Item.username});
+        return response.success({ status: true, id:user.id, username: username.Item.username, host: username.Item.host});
       } 
     } catch (e) {
       console.log("Big error");

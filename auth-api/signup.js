@@ -76,7 +76,7 @@ module.exports = {
         }
 
         var saltwrite = await dynamoDbLib.call("put", params2);
-        return response.success({status: true, id: id});
+        return response.success({status: true, id: id, username: postbody.username, host:postbody.host});
 
     } catch (e) {
       console.log('BIG ERROR');
