@@ -6,6 +6,10 @@ module.exports = {
     var postbody = JSON.parse(event.body);
 
     if (postbody.hostid == postbody.userid) return response.failure({status: false, errorMessage: 'You cannot book a game with yourself.'});
+    if (postbody.ingamename === undefined || postbody.ingamename === null) return response.failure({status: false, errorMessage: 'No player ingame name attached'});
+    if (postbody.type === undefined || postbody.type === null) return response.failure({status: false, errorMessage: 'No game type found'});
+    if (postbody.game === undefined || postbody.game === null) return response.failure({status: false, errorMessage: 'No game found'});
+
 
     var gameprice;
     if (postbody.type === 'coach') gameprice = 'coachprice';
@@ -51,16 +55,22 @@ module.exports = {
               "id": postbody.slotid,
               "hostid": postbody.hostid
             },
-            "UpdateExpression": 'SET #b = :true, #p = :id, #g = :game',
+            "UpdateExpression": 'SET #b = :true, #p = :id, #g = :game, #s = :status, #t = :type, #pign = :playerign',
             "ExpressionAttributeNames": {
               '#b' : 'booked',
               '#p' : 'playerid',
-              '#g' : 'game'
+              '#g' : 'game',
+              '#s' : 'status',
+              "#t" : 'type',
+              '#pign':'playeringamename'
             },
             "ExpressionAttributeValues": {
                 ':true' : 1,
                 ':id' : postbody.userid,
-                ':game' : postbody.game
+                ':game' : postbody.game,
+                ':status' : 'booked',
+                ':playerign': postbody.ingamename,
+                ':type': postbody.type
             }
           };
 

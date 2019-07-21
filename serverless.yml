@@ -125,6 +125,15 @@ functions:
           cors: true
           private: true
 
+  fullSlotData:
+    handler: private-api/full-slot-details.main
+    events:
+      - http:
+          path: slot-data/{hostidd}/{slotid}
+          method: get
+          cors: true
+          private: true
+
   makeBooking:
     handler: private-api/make-booking.main
     events:

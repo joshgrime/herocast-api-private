@@ -63,7 +63,8 @@ module.exports = {
                 "vsprice":postbody.vsprice,
                 "booked":0,
                 "time":x,
-                "date":postbody.date
+                "date":postbody.date,
+                "status": 'open'
               }
             }
           }
