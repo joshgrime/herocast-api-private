@@ -54,7 +54,8 @@ module.exports = {
             "level":0,
             "exp":0,
             "coins":0,
-            "host": postbody.host
+            "host": postbody.host,
+            "locale": postbody.locale
         }
     }
 

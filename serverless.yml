@@ -160,3 +160,12 @@ functions:
           method: post
           cors: true
           private: true
+  
+  dispute-game:
+    handler: private-api/dispute-game.main
+    events:
+      - http:
+          path: dispute-game
+          method: post
+          cors: true
+          private: true
