@@ -39,9 +39,11 @@ module.exports = {
       if (user.Item.games === null || user.Item.games === undefined || user.Item.games === '') return response.failure({status: false, errorMessage: 'You must select games before creating gameslots'});
       if (user.Item.console === null || user.Item.console === undefined || user.Item.console === '') return response.failure({status: false, errorMessage: 'You must select your console before creating gameslots'});
 
+      var table = "gameslots-"+user.Item.locale;
+
       const params = {
         RequestItems: {
-            "gameslots": []
+          table: []
         }
       }
 
