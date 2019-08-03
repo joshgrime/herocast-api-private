@@ -23,12 +23,14 @@ module.exports = {
 
     if (checkIfEmailExists.Items.length>0) return response.failure({status:false, errorMessage: 'Email already exists'});
 
+    var normalisedUsername = postbody.username.toLowerCase();
+
     const checkUserNameParams = {
       "TableName": "users",
       "IndexName": "username-index",
       "KeyConditionExpression": "username = :u",
       "ExpressionAttributeValues": {
-        ":u":postbody.username
+        ":u": normalisedUsername
       }
     }
 
@@ -50,7 +52,8 @@ module.exports = {
             "id": id,
             "email": postbody.email,
             "password": passHash,
-            "username": postbody.username,
+            "username": normalisedUsername,
+            "displayName": postbody.username,
             "level":0,
             "exp":0,
             "coins":0,
@@ -64,6 +67,7 @@ module.exports = {
         params.Item['coach'] = postbody.coach ? 1 : 0;
         params.Item['casual'] = postbody.casual ? 1 : 0;
         params.Item['twitchAuthed'] = 0;
+        params.Item['console'] = postbody.console;
     }
       
       var epic = await dynamoDbLib.call("put", params);
