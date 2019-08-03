@@ -59,6 +59,8 @@ module.exports = {
               Item: {
                 "id":id,
                 "hostid": postbody.hostid,
+                "hostusername":user.Item.username,
+                "hostdisplayname":user.Item.displayName,
                 "console":user.Item.console,
                 "coachprice":postbody.coachprice,
                 "casualprice":postbody.casualprice,
