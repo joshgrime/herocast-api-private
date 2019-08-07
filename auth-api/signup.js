@@ -54,7 +54,7 @@ module.exports = {
             "password": passHash,
             "username": normalisedUsername,
             "displayName": postbody.username,
-            "level":0,
+            "level":1,
             "exp":0,
             "coins":0,
             "host": postbody.host,
