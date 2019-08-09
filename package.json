@@ -12,7 +12,8 @@
   "dependencies": {
     "crypto-js": "3.1.9-1",
     "randomstring": "1.1.5",
-    "uuid": "3.3.2"
+    "uuid": "3.3.2",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "aws-sdk": "^2.478.0",

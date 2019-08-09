@@ -1,5 +1,5 @@
-const dynamoDbLib = require("./libs/dynamodb-lib");
-const response = require("./libs/response-lib");
+const dynamoDbLib = require("../libs/dynamodb-lib");
+const response = require("../libs/response-lib");
 const moment = require('moment');
 
 module.exports = {
@@ -10,16 +10,17 @@ module.exports = {
     const params = {
         TableName: 'gameslots',
         Key: {
-            id: slotid,
-            hostid: hostid
+            id: postbody.slotid,
+            hostid: postbody.hostid
         }
     };
 
     try {
       var slot = await dynamoDbLib.call("get", params);
       console.log(slot.Item);
-      if (slot.Item === undefined) return response.success({status:true, data: 'No times found.'});
-      else {
+      if (slot.Item === undefined) return response.failure({status:false, data: 'Couldn\'t find gameslot.'});
+      if (postbody.userid !== slot.Item.playerid) return response.failure({status: false, data: 'This is not your gameslot.'});
+
 
         var a = moment(event.time);
         var minute = a.minute();
@@ -43,8 +44,7 @@ module.exports = {
             return response.success({status:true});
         }
         else {
-            return response.failure({status:false, data: 'Game is not live/you are too late to dispute this slot.'});
-        }
+            return response.failure({status:false, data: 'This gameslot has been live for longer than 15 minutes.'});
       }
 
     } catch (e) {
