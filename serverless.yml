@@ -169,3 +169,21 @@ functions:
           method: post
           cors: true
           private: true
+  
+  update-disputed-gameslot:
+    handler: private-api/update-disputed-gameslot.main
+    events:
+      - http:
+          path: update-disputed-gameslot/{hostid}/{slotid}
+          method: get
+          cors: true
+          private: true
+
+  update-avatar:
+    handler: private-api/update-avatar.main
+    events:
+      - http:
+          path: update-avatar
+          method: post
+          cors: true
+          private: true

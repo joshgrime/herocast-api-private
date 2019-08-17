@@ -10,7 +10,7 @@ module.exports = {
         "Key": {
             "id":id
         },
-        "ProjectionExpression": "id, host, games, #lvl, twitchAuthed, twitchName, twitchAvatar, coach, casual, vs, console, exp, email, username, displayName, coins, locale",
+        "ProjectionExpression": "id, host, games, #lvl, twitchAuthed, twitchName, twitchAvatar, coach, casual, vs, console, exp, email, username, displayName, coins, locale, avatar",
         "ExpressionAttributeNames": {
           "#lvl":"level"
         }
