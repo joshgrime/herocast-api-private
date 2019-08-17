@@ -187,3 +187,12 @@ functions:
           method: post
           cors: true
           private: true
+
+  update-bio:
+    handler: private-api/update-bio.main
+    events:
+      - http:
+          path: update-bio
+          method: post
+          cors: true
+          private: true
