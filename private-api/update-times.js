@@ -6,6 +6,9 @@ module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
 
+    var d = new Date.getTime();
+    var created = d.getTime();
+
     if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once.'});
 
     var date = new Date();
@@ -69,7 +72,8 @@ module.exports = {
                 "time":x,
                 "date":postbody.date,
                 "locale": locale,
-                "status": 'open'
+                "status": 'open',
+                "created": created
               }
             }
           }
