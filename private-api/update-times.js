@@ -6,9 +6,6 @@ module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
 
-    var d = new Date.getTime();
-    var created = d.getTime();
-
     if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once.'});
 
     var date = new Date();
@@ -49,7 +46,14 @@ module.exports = {
       }
 
       var locale = user.Item.locale;
-  
+
+      var datea = (function(d){
+        var year = d.slice(0,4);
+        var month = d.slice(4,6);
+        var day = d.slice(6,8);
+        return year+'-'+month+'-'+day;
+      })(postbody.date);
+
       for (let x of postbody.times) {
         let insert = true;
         if (today == postbody.date) {
@@ -57,6 +61,15 @@ module.exports = {
         }
         if (insert) {
           let id = uuidv1();
+          var time = (function(t){
+            var hour = t.slice(0,2);
+            var mins = t.slice(2,4);
+            return hour+':'+mins+':00';
+          })(x);
+
+        var ime = new Date(datea+'T'+time);
+        var __time = ime.getTime()/1000;
+
           let obj = {
             PutRequest: {
               Item: {
@@ -70,10 +83,10 @@ module.exports = {
                 "vsprice":postbody.vsprice,
                 "booked":0,
                 "time":x,
-                "date":postbody.date,
+                "date": postbody.date,
                 "locale": locale,
                 "status": 'open',
-                "created": created
+                "timedex": __time
               }
             }
           }
