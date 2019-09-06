@@ -47,7 +47,8 @@ module.exports = {
           "ProjectionExpression": "host, displayName"
       }
 
-      var username = await dynamoDbLib.call("get", usernameParams)
+      var username = await dynamoDbLib.call("get", usernameParams);
+
         return response.success({ status: true, id:user.id, username: username.Item.displayName, host: username.Item.host});
       } 
     } catch (e) {

@@ -3,6 +3,7 @@ const response = require("../libs/response-lib");
 const cryptojs = require("crypto-js");
 const uuidv1 = require('uuid/v1');
 const randomstring = require("randomstring");
+var AWS = require("aws-sdk");
 
 module.exports = {
   main: async function (event, context) {
@@ -43,6 +44,11 @@ module.exports = {
         charset: 'alphanumeric'
     });
 
+    var emailCode = randomstring.generate({
+      length: 32,
+      charset: 'alphanumeric'
+  });
+
     var passHash = cryptojs.AES.encrypt(postbody.password, passSalt).toString();
     var id = uuidv1();
 
@@ -54,11 +60,13 @@ module.exports = {
             "password": passHash,
             "username": normalisedUsername,
             "displayName": postbody.username,
-            "level":1,
-            "exp":0,
-            "coins":0,
+            "level": 1,
+            "exp": 0,
+            "coins": 0,
             "host": postbody.host,
-            "locale": postbody.locale
+            "locale": postbody.locale,
+            "emailcode": emailCode,
+            "enabled": 0
         }
     }
 
@@ -81,6 +89,21 @@ module.exports = {
         }
 
         var saltwrite = await dynamoDbLib.call("put", params2);
+
+        var SNSmsg = {
+                code:emailCode,
+                email:postbody.email,
+            }
+
+        var eventText = JSON.stringify(SNSmsg);
+        var sns = new AWS.SNS();
+        var SNSparams = {
+          Message: eventText,
+          TopicArn: "arn:aws:sns:eu-west-1:163410335292:newSignUp"
+        };
+        
+        await sns.publish(SNSparams).promise();
+
         return response.success({status: true, id: id, username: postbody.username, host:postbody.host});
 
     } catch (e) {

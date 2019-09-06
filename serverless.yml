@@ -196,3 +196,12 @@ functions:
           method: post
           cors: true
           private: true
+  
+  activate-account:
+    handler: auth-api/activate-account.main
+    events:
+      - http:
+          path: activate-account
+          method: post
+          cors: true
+          private: true
