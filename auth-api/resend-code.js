@@ -43,7 +43,7 @@ module.exports = {
     await dynamoDbLib.call("update", updateParams);
     var SNSmsg = {
       code:emailCode,
-      email:postbody.email,
+      email:user.Item.email,
   }
 
     var eventText = JSON.stringify(SNSmsg);

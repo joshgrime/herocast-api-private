@@ -205,3 +205,12 @@ functions:
           method: post
           cors: true
           private: true
+
+  resend-code:
+    handler: auth-api/resend-code.main
+    events:
+      - http:
+          path: resend-code
+          method: post
+          cors: true
+          private: true
