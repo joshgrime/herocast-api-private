@@ -12,9 +12,9 @@ provider:
   region: eu-west-1
   role: arn:aws:iam::163410335292:role/private-api
 
-  environment:
+  #environment:
   #tableName: ${self:custom.tableName}
-   #stripeSecretKey: ${self:custom.environment.stripeSecretKey}
+  #stripeSecretKey: ${self:custom.environment.stripeSecretKey}
    
 functions:
   login:
@@ -212,5 +212,14 @@ functions:
       - http:
           path: resend-code
           method: post
+          cors: true
+          private: true
+
+  acceptHeroCode:
+    handler: private-api/accept-hero-code.main
+    events:
+      - http:
+          path: accept-hero-code/{id}
+          method: get
           cors: true
           private: true
