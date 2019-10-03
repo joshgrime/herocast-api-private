@@ -178,6 +178,15 @@ functions:
           method: get
           cors: true
           private: true
+  
+  generate-discord-code:
+    handler: private-api/generate-discord-code.main
+    events:
+      - http:
+          path: generate-discord-code/{userid}
+          method: get
+          cors: true
+          private: true
 
   update-avatar:
     handler: private-api/update-avatar.main
