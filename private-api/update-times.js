@@ -9,28 +9,12 @@ module.exports = {
     if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once.'});
 
     var date = new Date();
-    var y = date.getFullYear().toString();
-    var m = date.getMonth() + 1;
+    var y = date.getUTCFullYear().toString();
+    var m = date.getUTCMonth() + 1;
     m = m.toString();
-    var d = date.getDate().toString();
-    var h = date.getHours().toString();
-    var mi = date.getMinutes().toString();
-    /*
-    var UTC_Date = new Date(Date.UTC(y, m, d, h, mi));
-    var UTC_y = UTC_Date.getFullYear().toString();
-    var UTC_m = UTC_Date.getMonth();
-    UTC_m = UTC_m.toString();
-    var UTC_d = UTC_Date.getDate().toString();
-    var UTC_h = UTC_Date.getHours().toString();
-    var UTC_mi = UTC_Date.getMinutes().toString();
-
-    if (UTC_m.length<2) UTC_m = '0'+UTC_m;
-    if (UTC_d.length<2) UTC_d = '0'+UTC_d;
-    if (UTC_h.length<2) UTC_h = '0'+UTC_h;
-    if (UTC_mi.length<2) UTC_mi = '0'+UTC_mi;
-
-    var UTC_today = parseInt(UTC_y+UTC_m+UTC_d);
-    var UTC_timeNow = parseInt(UTC_h+UTC_mi);*/
+    var d = date.getUTCDate().toString();
+    var h = date.getUTCHours().toString();
+    var mi = date.getUTCMinutes().toString();
 
     if (m.length<2) m = '0'+m;
     if (d.length<2) d = '0'+d;
@@ -71,7 +55,8 @@ module.exports = {
         return year+'-'+month+'-'+day;
       })(postbody.date);
 
-      for (let x of postbody.times) {
+      for (let y of postbody.times) {
+        var x = y.time;
         let insert = true;
         if (today == postbody.date) {
           if (timeNow > parseInt(x)) insert = false;
@@ -82,9 +67,11 @@ module.exports = {
             var hour = t.slice(0,2);
             var mins = t.slice(2,4);
             return hour+':'+mins+':00';
-          })(x.time);
+          })(x);
         var ime = new Date(datea+'T'+time);
         var __time = ime.getTime()/1000;
+
+        var localtime = y.local;
 
           let obj = {
             PutRequest: {
@@ -103,7 +90,7 @@ module.exports = {
                 "locale": locale,
                 "status": 'open',
                 "timedex": __time,
-                "utc":postbody
+                "localtime": localtime
               }
             }
           }

@@ -10,7 +10,7 @@ module.exports = {
     const params = {
       "TableName": "users",
       "Key": {
-          "id":postbody.userid
+          "id": postbody.userid
       },
       "ProjectionExpression": "enabled, emailcode, email"
     }
