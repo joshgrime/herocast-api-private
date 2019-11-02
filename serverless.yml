@@ -160,7 +160,16 @@ functions:
           method: post
           cors: true
           private: true
-  
+          
+  deleteTwitchUser:
+    handler: private-api/delete-twitch-user.main
+    events:
+      - http:
+          path: delete-twitch-user
+          method: post
+          cors: true
+          private: true
+
   dispute-game:
     handler: private-api/dispute-game.main
     events:
@@ -231,15 +240,6 @@ functions:
           path: accept-hero-code/{id}
           method: get
           cors: true
-          private: true
-
-  twitch-ext:
-    handler: auth-api/enable-twitch.main
-    events:
-      - http:
-          path: enable-twitch
-          method: post
-          cors: false
           private: true
 
   twitch-ext-data:

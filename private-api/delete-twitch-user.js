@@ -5,20 +5,7 @@ module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
 
-    const params = {
-        "TableName": "users",
-        "Key": {
-            "id":postbody.id
-        },
-        "ProjectionExpression": "email"
-    }
-
-    try {
-      var user = await dynamoDbLib.call("get", params);
-      
-      if (user.Item.email !== postbody.email) return response.failure({status:false, errorMessage: 'Emails do not match'});
-
-        var twitchParams = {
+    var twitchParams = {
         TableName: 'users',
         Key: {
             id: postbody.id
@@ -31,12 +18,13 @@ module.exports = {
 
         },
         ExpressionAttributeValues: {
-            ':avUrl': postbody.avatar,
-            ':tname': postbody.twitchName,
-            ':tauth':1
+            ':avUrl': null,
+            ':tname': null,
+            ':tauth': 0
         }
         }; 
-        
+
+    try {   
         var success = await dynamoDbLib.call('update', twitchParams);
         return response.success({status: true});
       
