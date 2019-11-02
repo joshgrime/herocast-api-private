@@ -49,17 +49,32 @@ module.exports = {
 
         var newWealth = playerCoins.Item.coins - gameslotDetails.Item[gameprice];
 
+
+        const gameDetailsParams = {
+          "TableName": 'games',
+          "Key": {
+            "id":postbody.game
+          },
+          "ProjectionExpression": "#n",
+          "ExpressionAttributeNames": {
+            '#n' : 'name'
+          }
+        }
+        var gameDetails = await dynamoDbLib.call("get", gameDetailsParams);
+        var gameName = gameDetails.Item.name;
+
         const updateGameSlotParams = {
             "TableName": 'gameslots',
             "Key": {
               "id": postbody.slotid,
               "hostid": postbody.hostid
             },
-            "UpdateExpression": 'SET #b = :true, #p = :id, #g = :game, #s = :status, #t = :type, #pign = :playerign',
+            "UpdateExpression": 'SET #b = :true, #p = :id, #g = :game, #gn = :gameName, #s = :status, #t = :type, #pign = :playerign',
             "ExpressionAttributeNames": {
               '#b' : 'booked',
               '#p' : 'playerid',
               '#g' : 'game',
+              '#gn': 'gameName',
               '#s' : 'status',
               "#t" : 'type',
               '#pign':'playeringamename'
@@ -68,6 +83,7 @@ module.exports = {
                 ':true' : 1,
                 ':id' : postbody.userid,
                 ':game' : postbody.game,
+                ':gameName' : gameName,
                 ':status' : 'booked',
                 ':playerign': postbody.ingamename,
                 ':type': postbody.type

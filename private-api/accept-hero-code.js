@@ -19,7 +19,7 @@ module.exports = {
     };
     try {
       await dynamoDbLib.call("update", params);
-      return response.success(params.Item);
+      return response.success({status: true});
     } catch (e) {
       return response.failure({ status: false });
     }
