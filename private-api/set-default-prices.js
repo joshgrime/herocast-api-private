@@ -9,18 +9,40 @@ module.exports = {
       Key: {
         id: postbody.id
       },
-      UpdateExpression: 'SET #codp = :x, #cadp = :y, #vsdp = :z',
+      UpdateExpression: 'SET',
       ExpressionAttributeNames: {
-        '#codp' : 'casual_default_price',
-        '#cadp' : 'coach_default_price',
-        '#vsdp' : 'vs_default_price',
       },
       ExpressionAttributeValues: {
-        ':x' : postbody.casual,
-        ':y' : postbody.coach,
-        ':z' : postbody.vs,
       }
     };
+
+    var isOkay = false;
+
+    if (postbody.casual !== undefined) {
+      params.ExpressionAttributeValues[':x'] = postbody.casual;
+      params.ExpressionAttributeNames['#cadp'] = 'casual_default_price';
+      params.UpdateExpression += ' #cadp = :x,';
+      isOkay = true;
+    }
+
+    if (postbody.coach !== undefined) {
+      params.ExpressionAttributeValues[':y'] = postbody.coach;
+      params.ExpressionAttributeNames['#codp'] = 'coach_default_price';
+      params.UpdateExpression += ' #codp = :y,';
+      isOkay = true;
+    }
+    
+    if (postbody.vs !== undefined) {
+      params.ExpressionAttributeValues[':z'] = postbody.vs;
+      params.ExpressionAttributeNames['#vsdp'] = 'vs_default_price';
+      params.UpdateExpression += ' #vsdp = :z,';
+      isOkay = true;
+    }
+
+    if (!isOkay) return response.failure({status:false, msg: 'No prices to update.'});
+
+    params.UpdateExpression = params.UpdateExpression.substring(0,params.UpdateExpression.length-1);    
+    
     try {
       await dynamoDbLib.call("update", params);
       return response.success(params.Item);
