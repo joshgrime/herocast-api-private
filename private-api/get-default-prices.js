@@ -10,7 +10,7 @@ module.exports = {
         "Key": {
             "id":id
         },
-        "ProjectionExpression": "id, casual_default_price, coach_default_price, vs_default_price, locale",
+        "ProjectionExpression": "id, casual_default_price, coach_default_price, vs_default_price, multi_default_price, locale",
     }
 
 

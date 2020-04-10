@@ -39,6 +39,13 @@ module.exports = {
       isOkay = true;
     }
 
+    if (postbody.multi !== undefined) {
+      params.ExpressionAttributeValues[':m'] = postbody.multi;
+      params.ExpressionAttributeNames['#mudp'] = 'multi_default_price';
+      params.UpdateExpression += ' #mudp = :m,';
+      isOkay = true;
+    }
+
     if (!isOkay) return response.failure({status:false, msg: 'No prices to update.'});
 
     params.UpdateExpression = params.UpdateExpression.substring(0,params.UpdateExpression.length-1);    

@@ -8,22 +8,25 @@ module.exports = {
     var coach = postbody.coach ? 1 : 0;
     var casual = postbody.casual ? 1 : 0;
     var vs = postbody.vs ? 1 : 0;
+    var multi = postbody.multi ? 1 : 0;
 
     const params = {
       TableName: 'users',
       Key: {
         id: postbody.id
       },
-      UpdateExpression: 'SET #codp = :x, #cadp = :y, #vsdp = :z',
+      UpdateExpression: 'SET #codp = :x, #cadp = :y, #vsdp = :z, #mudp = :m',
       ExpressionAttributeNames: {
         '#codp' : 'casual',
         '#cadp' : 'coach',
         '#vsdp' : 'vs',
+        '#mudp' : 'multi',
       },
       ExpressionAttributeValues: {
         ':x' : casual,
         ':y' : coach,
         ':z' : vs,
+        ':m' : multi,
       }
     };
     try {

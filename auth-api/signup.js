@@ -74,6 +74,11 @@ module.exports = {
         params.Item['vs'] = postbody.vs ? 1 : 0;
         params.Item['coach'] = postbody.coach ? 1 : 0;
         params.Item['casual'] = postbody.casual ? 1 : 0;
+        params.Item['multi'] = postbody.casual ? 1 : 0;
+        params.Item['vs_default_price'] = 500;
+        params.Item['casual_default_price'] = 500;
+        params.Item['coach_default_price'] = 500;
+        params.Item['multi_default_price'] = 500;
         params.Item['twitchAuthed'] = 0;
         params.Item['console'] = postbody.console;
     }

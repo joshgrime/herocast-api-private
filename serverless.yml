@@ -7,7 +7,7 @@ provider:
   name: aws
   apiKeys:
     - privateKey
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   stage: dev
   region: eu-west-1
   role: arn:aws:iam::163410335292:role/private-api
@@ -98,6 +98,15 @@ functions:
           cors: true
           private: true
 
+  updateTimesMulti:
+    handler: private-api/update-times-multi.main
+    events:
+      - http:
+          path: update-times-multi
+          method: post
+          cors: true
+          private: true
+
   getMyTimes:
     handler: private-api/get-my-times-for-this-date.main
     events:
@@ -131,15 +140,6 @@ functions:
       - http:
           path: slot-data/{hostidd}/{slotid}
           method: get
-          cors: true
-          private: true
-
-  makeBooking:
-    handler: private-api/make-booking.main
-    events:
-      - http:
-          path: make-booking
-          method: post
           cors: true
           private: true
 
