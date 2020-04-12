@@ -110,7 +110,8 @@ module.exports = {
                 "game": postbody.game,
                 "maxSlots": game.Item.maxSlots,
                 "slotsBooked": 0,
-                "playerids": '[]'
+                "playerids": '[]',
+                "type": 'multi'
               }
             }
           }

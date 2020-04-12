@@ -143,15 +143,6 @@ functions:
           cors: true
           private: true
 
-  addCoins:
-    handler: private-api/add-coins.main
-    events:
-      - http:
-          path: add-coins
-          method: post
-          cors: true
-          private: true
-
   newTwitchUser:
     handler: private-api/new-twitch-user.main
     events:
