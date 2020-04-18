@@ -6,7 +6,13 @@ module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
 
-    if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once.'});
+    if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once'});
+
+    var casualprice = isNaN(parseInt(postbody.casualprice)) ? 0 : parseInt(postbody.casualprice);
+    var vsprice = isNaN(parseInt(postbody.vsprice)) ? 0 : parseInt(postbody.vsprice);
+    var coachprice = isNaN(parseInt(postbody.coachprice)) ? 0 : parseInt(postbody.coachprice);
+
+    if (casualprice === 0 && coachprice === 0 && vsprice === 0) return response.failure({status: false, errorMessage: 'You must select at least 1 gameslot type'})
 
     var date = new Date();
     var y = date.getUTCFullYear().toString();
@@ -36,7 +42,7 @@ module.exports = {
       var user = await dynamoDbLib.call('get', checkParams);
 
       if (user.Item.host != 1) return response.failure({status: false, errorMessage: 'You must be a host to add game times'});
-      if (user.Item.twitchAuthed != 1) return response.failure({status:false, errorMessage: 'You must authenticate your Twitch account first.'});
+      if (user.Item.twitchAuthed != 1) return response.failure({status:false, errorMessage: 'You must authenticate your Twitch account first'});
       if (user.Item.games === null || user.Item.games === undefined || user.Item.games === '') return response.failure({status: false, errorMessage: 'You must select games before creating gameslots'});
       if (user.Item.console === null || user.Item.console === undefined || user.Item.console === '') return response.failure({status: false, errorMessage: 'You must select your console before creating gameslots'});
 
@@ -81,9 +87,9 @@ module.exports = {
                 "hostusername":user.Item.username,
                 "hostdisplayname":user.Item.displayName,
                 "console":user.Item.console,
-                "coachprice":postbody.coachprice,
-                "casualprice":postbody.casualprice,
-                "vsprice":postbody.vsprice,
+                "coachprice":coachprice,
+                "casualprice":casualprice,
+                "vsprice":vsprice,
                 "booked":0,
                 "time":x,
                 "date": postbody.date,
@@ -102,7 +108,7 @@ module.exports = {
     } catch (e) {
       console.log('Big error!');
       console.log(e);
-      return response.failure({ status: false });
+      return response.failure({ status: false, e: e });
     }
   }
 }

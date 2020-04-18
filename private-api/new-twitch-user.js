@@ -16,7 +16,7 @@ module.exports = {
     try {
       var user = await dynamoDbLib.call("get", params);
       
-      if (user.Item.email !== postbody.email) return response.failure({status:false, errorMessage: 'Emails do not match'});
+      if (user.Item.email !== postbody.email) return response.failure({status:false, errorMessage: 'Your Herocast and Twitch emails must be the same.'});
 
         var twitchParams = {
         TableName: 'users',

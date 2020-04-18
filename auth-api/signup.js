@@ -10,6 +10,12 @@ module.exports = {
     
     var postbody = JSON.parse(event.body);
 
+    if (postbody.username === undefined || postbody.username === null) return response.failure({status: false, errorMessage: 'No username given.'});
+    if (postbody.email === undefined || postbody.email === null) return response.failure({status: false, errorMessage: 'No email given.'});
+    if (postbody.host === undefined || postbody.host === null) return response.failure({status: false, errorMessage: 'No player/host option given.'});
+    if (postbody.host === 1 && (postbody.console === undefined || postbody.console === null)) return response.failure({status: false, errorMessage: 'No console given.'});
+    if (postbody.locale !== 'UK' && postbody.locale !== 'EUR' && postbody.locale !== 'USE' && postbody.locale !== 'USW' && postbody.locale !== 'USM' && postbody.locale !== 'USC' && postbody.locale !== 'CA') return response.failure({status: false, errorMessage: 'Invalid locale given.'});
+
     try {
     const checkEmailParams = {
       "TableName": "users",

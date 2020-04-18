@@ -6,8 +6,8 @@ module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
 
-    if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once.'});
-    if (postbody.game === null || postbody.game === undefined || postbody.game === '') return response.failure({status: false, errorMessage: 'No game specified.'});
+    if (postbody.times.length > 25) return response.failure({status: false, errorMessage: 'You may only set a maximum of 25 times at once'});
+    if (postbody.game === null || postbody.game === undefined || postbody.game === '') return response.failure({status: false, errorMessage: 'No game specified'});
 
     var date = new Date();
     var y = date.getUTCFullYear().toString();
@@ -37,7 +37,7 @@ module.exports = {
       var user = await dynamoDbLib.call('get', checkParams);
 
       if (user.Item.host != 1) return response.failure({status: false, errorMessage: 'You must be a host to add game times'});
-      if (user.Item.twitchAuthed != 1) return response.failure({status:false, errorMessage: 'You must authenticate your Twitch account first.'});
+      if (user.Item.twitchAuthed != 1) return response.failure({status:false, errorMessage: 'You must authenticate your Twitch account first'});
       if (user.Item.console === null || user.Item.console === undefined || user.Item.console === '') return response.failure({status: false, errorMessage: 'You must select your console before creating gameslots'});
 
       const gameParams = {
@@ -53,7 +53,7 @@ module.exports = {
       var isOkay = false;
       var gameArray = game.Item.consoles.split(',');
       gameArray.every(x=> {
-        if (x === user.Item.console.toLowerCase()) isOkay = true;
+        if (x.toLowerCase() === user.Item.console.toLowerCase()) isOkay = true;
       });
 
       if (!isOkay) return response.failure({status: false, errorMessage: 'Host does not have relevant console for this game'});

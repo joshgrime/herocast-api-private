@@ -4,6 +4,9 @@ const response = require("../libs/response-lib");
 module.exports = {
   main: async function (event, context) {
     var postbody = JSON.parse(event.body);
+      var check = postbody.games.split(',').length < 11;
+
+      if (!check) return response.failure({status: false, error: 'You may only set 10 games at once.'});
 
       var gs = (function(y){
         if (y === "") return 'NULL';

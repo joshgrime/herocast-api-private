@@ -11,10 +11,6 @@ provider:
   stage: dev
   region: eu-west-1
   role: arn:aws:iam::163410335292:role/private-api
-
-  #environment:
-  #tableName: ${self:custom.tableName}
-  #stripeSecretKey: ${self:custom.environment.stripeSecretKey}
    
 functions:
   login:
@@ -239,5 +235,14 @@ functions:
       - http:
           path: twitch-ext-data/{twitchid}
           method: get
+          cors: false
+          private: true
+  
+  set-host-type:
+    handler: private-api/set-host-type.main
+    events:
+      - http:
+          path: set-host-type
+          method: post
           cors: false
           private: true
