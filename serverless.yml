@@ -19,7 +19,7 @@ functions:
       - http:
           path: login
           method: post
-          cors: true
+          cors: false
           private: true
         
   signup:
@@ -28,7 +28,7 @@ functions:
       - http:
           path: signup
           method: post
-          cors: true
+          cors: false
           private: true
 
   changePassword:
@@ -37,8 +37,17 @@ functions:
       - http:
           path: change-password
           method: post
-          cors: true
+          cors: false
           private: true
+
+  forgotPassword:
+    handler: auth-api/forgot-password.main
+    events:
+        - http:
+            path: forgot-password
+            method: post
+            cors: false
+            private: true
 
   deleteTimes:
     handler: private-api/delete-times.main
@@ -126,15 +135,6 @@ functions:
     events:
       - http:
           path: profile-data/{id}
-          method: get
-          cors: true
-          private: true
-
-  fullSlotData:
-    handler: private-api/full-slot-details.main
-    events:
-      - http:
-          path: slot-data/{hostidd}/{slotid}
           method: get
           cors: true
           private: true
