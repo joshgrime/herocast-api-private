@@ -104,6 +104,7 @@ module.exports = {
         var SNSmsg = {
                 code:emailCode,
                 email:postbody.email,
+                username: postbody.username
             }
 
         var eventText = JSON.stringify(SNSmsg);

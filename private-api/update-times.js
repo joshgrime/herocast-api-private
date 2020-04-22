@@ -43,6 +43,7 @@ module.exports = {
 
       if (user.Item.host != 1) return response.failure({status: false, errorMessage: 'You must be a host to add game times'});
       if (user.Item.twitchAuthed != 1) return response.failure({status:false, errorMessage: 'You must authenticate your Twitch account first'});
+      if (user.Item.stripeConnected != 1) return response.failure({status:false, errorMessage: 'You must connect a Stripe account first'});
       if (user.Item.games === null || user.Item.games === undefined || user.Item.games === '') return response.failure({status: false, errorMessage: 'You must select games before creating gameslots'});
       if (user.Item.console === null || user.Item.console === undefined || user.Item.console === '') return response.failure({status: false, errorMessage: 'You must select your console before creating gameslots'});
 

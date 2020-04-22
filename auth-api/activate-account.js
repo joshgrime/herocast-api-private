@@ -1,5 +1,7 @@
 const dynamoDbLib = require("../libs/dynamodb-lib");
 const response = require("../libs/response-lib");
+const AWS = require("aws-sdk");
+
 
 module.exports = {
   main: async function (event, context) {
@@ -34,6 +36,19 @@ module.exports = {
           }
         };
         await dynamoDbLib.call("update", updateParams);
+
+        var SNSmsg = {
+          email:postbody.email
+      }
+
+      var eventText = JSON.stringify(SNSmsg);
+      var sns = new AWS.SNS();
+      var SNSparams = {
+        Message: eventText,
+        TopicArn: "arn:aws:sns:eu-west-1:163410335292:AccountActivated"
+      };
+      
+      await sns.publish(SNSparams).promise();
 
         return response.success({status: true});
       }

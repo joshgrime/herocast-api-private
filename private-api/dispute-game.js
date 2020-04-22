@@ -25,7 +25,7 @@ module.exports = {
         var a = moment(event.time);
         var minute = a.minute();
 
-        if (slot.Item.status === 'live' && (minute <= 15)){// || (minute >= 30 && minute <= 45))) {
+        if (slot.Item.status === 'live' && (minute >= 15 && minute <= 45)){// || (minute >= 30 && minute <= 45))) {
             var updateParam = {
                 TableName: 'gameslots',
                 Key: {

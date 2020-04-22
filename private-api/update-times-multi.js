@@ -38,6 +38,7 @@ module.exports = {
 
       if (user.Item.host != 1) return response.failure({status: false, errorMessage: 'You must be a host to add game times'});
       if (user.Item.twitchAuthed != 1) return response.failure({status:false, errorMessage: 'You must authenticate your Twitch account first'});
+      if (user.Item.stripeConnected != 1) return response.failure({status:false, errorMessage: 'You must connect a Stripe account first'});
       if (user.Item.console === null || user.Item.console === undefined || user.Item.console === '') return response.failure({status: false, errorMessage: 'You must select your console before creating gameslots'});
 
       const gameParams = {
@@ -45,7 +46,10 @@ module.exports = {
         Key: {
           id: postbody.game
         },
-        ProjectionExpression: 'id, consoles, maxSlots'
+        ExpressionAttributeNames: {
+          "#n":"name"
+        },
+        ProjectionExpression: 'id, consoles, maxSlots, #n'
       }
 
       var game = await dynamoDbLib.call('get', gameParams);
@@ -108,6 +112,7 @@ module.exports = {
                 "timedex": __time,
                 "localtime": localtime,
                 "game": postbody.game,
+                "gameName": game.Item.name,
                 "maxSlots": game.Item.maxSlots,
                 "slotsBooked": 0,
                 "playerids": '[]',
